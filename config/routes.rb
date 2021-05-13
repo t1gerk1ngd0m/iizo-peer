@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   get 'signin', to: 'sessions#new'
 
   resources :sessions, only: [:create, :destroy]
+  resources :iizo, only: [:create]
 end
