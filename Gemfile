@@ -17,6 +17,7 @@ gem 'slim-rails'
 gem 'omniauth'
 gem 'omniauth-slack', '~> 2'
 gem 'omniauth-google-oauth2'
+gem 'httpclient'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
