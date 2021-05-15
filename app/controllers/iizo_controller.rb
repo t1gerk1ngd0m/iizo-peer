@@ -1,17 +1,22 @@
 class IizoController < ApplicationController
+  # TODO: 社外公開するならちゃんとやる
   protect_from_forgery
 
   def create
-    target_user = iizo_params[:text].match(/<@(.*?)>/)[1].split('|')
-    posted_user = [iizo_params[:user_id], iizo_params[:user_name]]
+    team = Team.find_by(slack_id: iizo_params[:team_id])
+    target_user_params = iizo_params[:text].match(/<@(.*?)>/)[1].split('|')
+    target_user = team.find_or_create_user_by_slack_id(target_user_params[0], slack_name: target_user_params[1])
+    posted_user = team.find_or_create_user_by_slack_id(iizo_params[:user_id], slack_name: iizo_params[:user_name])
 
     iizo_message = iizo_params[:text].match(/>(.*?\Z)/)[1]
-    reply_message = "<@#{target_user[1]}>\n<@#{posted_user[1]}>からいいぞが送られてきたよ！\n#{iizo_message}"
+    posted_user.send_iizo_to(target_user, message: iizo_message, response_url: iizo_params[:response_url])
 
+    reply_message = "<@#{target_user.slack_name}>\n<@#{posted_user.slack_name}> からいいぞが送られてきたよ！\n#{iizo_message}"
     request_body = {
       text: reply_message,
       response_type: "in_channel"
     }
+
     client = HTTPClient.new
     client.post(
       iizo_params[:response_url],
