@@ -3,6 +3,9 @@ Rails.application.routes.draw do
   get 'auth/failure', to: redirect('/')
   get 'signin', to: 'sessions#new'
 
-  resources :sessions, only: [:create, :destroy]
-  resources :iizo, only: [:create]
+  namespace :api do
+    namespace :v1 do
+      resources :iizo, only: [:create]
+    end
+  end
 end
