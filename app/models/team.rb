@@ -13,6 +13,17 @@
 class Team < ApplicationRecord
   has_many :users, dependent: :destroy
 
-  validates :slack_id
-  validates :slack_name
+  validates :slack_id, presence: true, uniqueness: true
+  validates :slack_name, presence: true
+
+  def self.find_or_create_by_slack_id(slack_id, **args)
+    team = self.find_or_create_by(slack_id: slack_id)
+    team.update(args)
+  end
+
+  def find_or_create_user_by_slack_id(user_slack_id, **args)
+    user = users.find_or_create_by(slack_id: user_slack_id)
+    user.update(args)
+    user
+  end
 end
