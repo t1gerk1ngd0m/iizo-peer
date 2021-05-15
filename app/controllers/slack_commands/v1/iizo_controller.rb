@@ -1,4 +1,4 @@
-class IizoController < ApplicationController
+class SlackCommands::V1::IizoController < ApplicationController
   # TODO: 社外公開するならちゃんとやる
   protect_from_forgery
 
