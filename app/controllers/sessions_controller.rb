@@ -4,11 +4,6 @@ class SessionsController < ApplicationController
   end
 
   def create
-    # binding.pry
-    # user = User.from_omniauth(request.env['omniauth.auth'])
-    # if user.save
-    #   session[:user_id] = user.id
-    # end
     client = HTTPClient.new
     res = client.post(
       slack_auth_url,
@@ -18,9 +13,16 @@ class SessionsController < ApplicationController
         client_secret: ENV['SLACK_API_SECRET'],
       }
     )
-    redirect_to signin_path
-  end
+    res_body = JSON.parse(res.body)
+    team_item = res_body['team']
 
+    Team.find_or_create_by_slack_id(
+      team_item['id'],
+      slack_name: team_item['name'],
+      slack_access_token: res_body['access_token']
+    )
+
+    redirect_to signin_path
   end
 
   private
