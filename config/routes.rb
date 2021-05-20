@@ -5,7 +5,11 @@ Rails.application.routes.draw do
 
   namespace :slack_commands do
     namespace :v1 do
-      resources :iizo, only: [:create]
+      resources :iizo, only: [:create] do
+        collection do
+          post :list
+        end
+      end
     end
   end
 end

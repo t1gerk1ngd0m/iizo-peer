@@ -2,6 +2,30 @@ class SlackCommands::V1::IizoController < ApplicationController
   # TODO: 社外公開するならちゃんとやる
   protect_from_forgery
 
+  def list
+    user = User.find_by(slack_id: iizo_params[:user_id])
+    iizo_list = if user.present?
+      user.recieved_iizos.includes(:to_user).order(created_at: :desc)
+    else
+      []
+    end
+    init_msg = "<@#{user.slack_name}> 今までもらったいいぞは#{iizo_list.count}件やで！\n"
+    reply_message = iizo_list.each_with_index.reduce(init_msg) do |result, (iizo, index)|
+      result += "#{iizo.created_at.strftime('%Y/%m/%d')} #{iizo.message} by #{iizo.from_user.slack_name}\n"
+    end
+
+    request_body = {
+      text: reply_message,
+      response_type: "in_channel"
+    }
+    client = HTTPClient.new
+    client.post(
+      iizo_params[:response_url],
+      request_body.to_json,
+    )
+    head :ok
+  end
+
   def create
     team = Team.find_by(slack_id: iizo_params[:team_id])
     target_user_params = iizo_params[:text].match(/<@(.*?)>/)[1].split('|')
