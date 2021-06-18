@@ -10,11 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_15_053129) do
+ActiveRecord::Schema.define(version: 2021_06_18_083554) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "iizo_stamps", force: :cascade do |t|
+    t.uuid "to_user_id", null: false
+    t.uuid "from_user_id", null: false
+    t.integer "slack_event_type", default: 0, null: false
+    t.string "slack_event_id", default: "", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["from_user_id"], name: "index_iizo_stamps_on_from_user_id"
+    t.index ["to_user_id"], name: "index_iizo_stamps_on_to_user_id"
+  end
 
   create_table "iizos", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "to_user_id", null: false
@@ -45,6 +56,8 @@ ActiveRecord::Schema.define(version: 2021_05_15_053129) do
     t.index ["team_id"], name: "index_users_on_team_id"
   end
 
+  add_foreign_key "iizo_stamps", "users", column: "from_user_id"
+  add_foreign_key "iizo_stamps", "users", column: "to_user_id"
   add_foreign_key "iizos", "users", column: "from_user_id"
   add_foreign_key "iizos", "users", column: "to_user_id"
   add_foreign_key "users", "teams"
