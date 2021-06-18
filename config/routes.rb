@@ -12,4 +12,16 @@ Rails.application.routes.draw do
       end
     end
   end
+  namespace :slack do
+    namespace :commands do
+      resources :iizo, only: [:create] do
+        collection do
+          post :list
+        end
+      end
+    end
+    namespace :events do
+      resources :iizo, only: [:create]
+    end
+  end
 end
