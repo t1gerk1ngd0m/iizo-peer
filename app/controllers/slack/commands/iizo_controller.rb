@@ -1,12 +1,13 @@
 class Slack::Commands::IizoController < Slack::BaseController
   def list
     user = User.find_by(slack_id: iizo_params[:user_id])
-    iizo_list = if user.present?
-      user.recieved_iizos.includes(:to_user).order(created_at: :desc)
-    else
-      []
+    iizo_list = []
+    recieved_iizo_count = 0
+    if user.present?
+      iizo_list = user.recieved_iizos.includes(:to_user).order(created_at: :desc)
+      recieved_iizo_count = iizo_list.count + user.iizo_stamps_count
     end
-    init_msg = "<@#{user.slack_name}> 今までもらったいいぞは#{iizo_list.count}件やで！\n"
+    init_msg = "<@#{user.slack_name}> 今までもらったいいぞは#{recieved_iizo_count}件やで！\n"
     reply_message = iizo_list.each_with_index.reduce(init_msg) do |result, (iizo, index)|
       result += "#{iizo.created_at.strftime('%Y/%m/%d')} #{iizo.message} by #{iizo.from_user.slack_name}\n"
     end

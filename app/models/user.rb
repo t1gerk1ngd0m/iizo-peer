@@ -40,6 +40,6 @@ class User < ApplicationRecord
   end
 
   def iizo_stamps_count
-    iizo_stamps.reaction_added.count - iizo_stamps.reaction_removed.count
+    recieved_iizo_stamps.reaction_added.count - recieved_iizo_stamps.reaction_removed.count
   end
 end
