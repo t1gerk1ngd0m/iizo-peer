@@ -31,7 +31,7 @@ class User < ApplicationRecord
     send_iizos.create(args.merge(to_user: target))
   end
 
-  def recieve_iizo_from(sender, **args)
+  def receive_iizo_from(sender, **args)
     received_iizos.create(args.merge(from_user: sender))
   end
 
