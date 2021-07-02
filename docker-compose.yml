@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  web:
+    build: .
+    command: >
+      bash -c "rm -f tmp/pids/server.pid &&
+               bundle exec rails s -p 3000 -b '0.0.0.0'"
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+      - bundle:/usr/local/bundle:cached
+      - node_modules:/app/node_modules
+      - /app/vendor
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      DB_USERNAME: postgres
+      DB_NAME: iizo
+      DB_PASSWORD: password
+      DB_HOST: db
+    tty: true
+    stdin_open: true
+
+volumes:
+  db-data:
+  bundle:
+  node_modules:
