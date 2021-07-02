@@ -19,9 +19,9 @@
 #
 class User < ApplicationRecord
   belongs_to :team
-  has_many :recieved_iizos, foreign_key: :to_user_id, class_name: "Iizo"
+  has_many :received_iizos, foreign_key: :to_user_id, class_name: "Iizo"
   has_many :send_iizos, foreign_key: :from_user_id, class_name: "Iizo"
-  has_many :recieved_iizo_stamps, foreign_key: :to_user_id, class_name: "IizoStamp"
+  has_many :received_iizo_stamps, foreign_key: :to_user_id, class_name: "IizoStamp"
   has_many :send_iizo_stamps, foreign_key: :from_user_id, class_name: "IizoStamp"
 
   validates :slack_id, presence: true, uniqueness: true
@@ -32,7 +32,7 @@ class User < ApplicationRecord
   end
 
   def recieve_iizo_from(sender, **args)
-    recieved_iizos.create(args.merge(from_user: sender))
+    received_iizos.create(args.merge(from_user: sender))
   end
 
   def toggle_iizo_stamp_on(target, **args)
@@ -40,6 +40,6 @@ class User < ApplicationRecord
   end
 
   def iizo_stamps_count
-    recieved_iizo_stamps.reaction_added.count - recieved_iizo_stamps.reaction_removed.count
+    received_iizo_stamps.reaction_added.count - received_iizo_stamps.reaction_removed.count
   end
 end

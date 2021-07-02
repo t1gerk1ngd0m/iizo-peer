@@ -5,7 +5,7 @@ class SlackCommands::V1::IizoController < ApplicationController
   def list
     user = User.find_by(slack_id: iizo_params[:user_id])
     iizo_list = if user.present?
-      user.recieved_iizos.includes(:to_user).order(created_at: :desc)
+      user.received_iizos.includes(:to_user).order(created_at: :desc)
     else
       []
     end
