@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_18_083554) do
+ActiveRecord::Schema.define(version: 2021_07_02_082922) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 2021_06_18_083554) do
     t.string "slack_access_token", default: "", null: false, comment: "アプリインストール時に発行されたトークン"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "iizo_notification_slack_webhook_url", default: "", null: false, comment: "いいぞ通知用Slack Webhook URL"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

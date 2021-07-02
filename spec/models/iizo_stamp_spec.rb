@@ -3,7 +3,7 @@
 # Table name: iizo_stamps
 #
 #  id               :bigint           not null, primary key
-#  slack_event_type :integer          default(0), not null
+#  slack_event_type :integer          default("reaction_added"), not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  from_user_id     :uuid             not null

@@ -13,6 +13,19 @@ class Slack::Events::IizoController < Slack::BaseController
       slack_event_id: iizo_params[:event_id]
     )
 
+    if iizo_params[:event][:type] == 'reaction_added'
+      reply_message = "<@#{target_user.slack_name}>\n<@#{posted_user.slack_name}> がいいぞしてくれたよ！"
+      request_body = {
+        text: reply_message,
+        response_type: "in_channel"
+      }
+      client = HTTPClient.new
+      client.post(
+        team.iizo_notification_slack_webhook_url,
+        request_body.to_json,
+      )
+    end
+
     render json: params[:challenge].to_json
   end
 
